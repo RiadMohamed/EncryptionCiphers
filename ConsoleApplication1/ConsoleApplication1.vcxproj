@@ -87,7 +87,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_SCL_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
@@ -150,8 +150,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="caesar_plain.txt" />
+    <Text Include="caeser_output.txt" />
     <Text Include="hill_plain_2x2.txt" />
     <Text Include="hill_plain_3x3.txt" />
+    <Text Include="playfair_output.txt" />
     <Text Include="playfair_plain.txt" />
     <Text Include="vernam_plain.txt" />
     <Text Include="vigenere_plain.txt" />

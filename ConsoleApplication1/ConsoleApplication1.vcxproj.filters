@@ -38,5 +38,11 @@
     <Text Include="hill_plain_2x2.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="caeser_output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="playfair_output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
