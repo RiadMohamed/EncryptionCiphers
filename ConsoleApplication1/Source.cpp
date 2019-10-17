@@ -43,11 +43,8 @@ void CaeserCipher(int s, string filePath = "")
 		// MARK: - Console output
 		cout << "CAESER CIPHER :: " << result << endl;
 
-		// MARK: - File IO
-		
+		// MARK: - File IO	
 		myfile << result << endl;
-		
-		
 	}
 	myfile << SEPARATOR;
 	myfile.close();
@@ -187,6 +184,122 @@ void PlayFairCipher(string key, string filePath = "") {
 
 }
 
+void HillCipher(int** keyParameter, const int matrixSize, string filePath = "") {
+
+	class HillCipher {
+		public: int size = 3;
+		public: string encrypt3x3(string text, int **key) {
+			string c = "";
+			size_t k = 0;
+			int input[3];
+
+			while (k < text.length()) {
+				input[0] = text[k++] - 65;
+				input[1] = text[k++] - 65;
+				input[2] = text[k++] - 65;
+
+				for (int i = 0; i < 3; i++) {
+					int cipher = 0;
+					for (int j = 0; j < 3; j++) {
+						cipher += key[i][j] * input[j];
+					}
+					c += (cipher % 26) + 65;
+				}
+			}
+			return c;
+		}
+		public: string encrypt2x2(string text, int **key) {
+			string c = "";
+			size_t k = 0;
+			int input[2];
+
+			while (k < text.length()) {
+				input[0] = text[k++] - 65;
+				input[1] = text[k++] - 65;
+
+				for (int i = 0; i < 2; i++) {
+					int cipher = 0;
+					for (int j = 0; j < 2; j++) {
+						cipher += key[i][j] * input[j];
+					}
+					c += (cipher % 26) + 65;
+				}
+			}
+			return c;
+		}
+	};
+	HillCipher hc;
+
+	// MARK: - File IO
+	ifstream inFile;
+	ofstream myfile;
+	int** key = NULL;
+	if (filePath.length() == 0) {
+		if (matrixSize == 2) {
+			inFile.open("hill_plain_2x2.txt");
+			myfile.open("hill_output_2x2.txt", ios::app);
+			key = new int*[2];
+			for (int i = 0; i < 2; ++i) {
+				key[i] = new int[2];
+			}
+			for (int i = 0; i < 2; i++)
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					key[i][j] = keyParameter[i][j];
+				}
+			}
+		}
+		else {
+			inFile.open("hill_plain_3x3.txt");
+			myfile.open("hill_output_3x3.txt", ios::app);
+			key = new int*[3];
+			for (int i = 0; i < 3; ++i) {
+				key[i] = new int[3];
+			}
+			for (int i = 0; i < 3; i++)
+			{
+				for (int j = 0; j < 3; j++)
+				{
+					key[i][j] = keyParameter[i][j];
+				}
+			}
+		}
+	}
+	else {
+		inFile.open(filePath);
+	}
+	if (inFile.fail()) {
+		cout << "Error opeing the file. Program will terminate" << endl;
+		inFile.close();
+		exit(1);
+	}
+
+	string result;
+	for (string line; getline(inFile, line); )
+	{
+		// MARK: - Encryption
+		if (matrixSize == 3)
+			result = hc.encrypt3x3(line, key);
+		else
+			result = hc.encrypt2x2(line, key);
+
+		// MARK: - Console output
+		cout << "HILL CIPHER :: " << result << endl;
+		// MARK: - File IO
+		myfile << result << endl;
+	}
+	
+	myfile << SEPARATOR;
+	myfile.close();
+	inFile.close();
+	cout << SEPARATOR;
+	for (int i = 0; i < matrixSize; ++i) {
+		delete[] key[i];
+	}
+	delete[] key;
+
+}
 // Driver program to test the above function 
 int main()
 {
@@ -206,6 +319,29 @@ int main()
 		//PlayFairCipher("archangel");
 
 		// Call the HillCipher
+		int **key2x2 = new int*[2];
+		for (int i = 0; i < 2; i++) {
+			key2x2[i] = new int[2];
+		}
+		key2x2[0][0] = 5; key2x2[0][1] = 17; key2x2[1][0] = 8; key2x2[1][1] = 3;
+		HillCipher(key2x2, 2);
+		for (int i = 0; i < 2; ++i) {
+			delete[] key2x2[i];
+		}
+		delete[] key2x2;
+
+		int **key3x3 = new int*[3];
+		for (int i = 0; i < 3; i++) {
+			key3x3[i] = new int[3];
+		}
+		key3x3[0][0] = 2; key3x3[0][1] = 4; key3x3[0][2] = 12;
+		key3x3[1][0] = 9; key3x3[1][1] = 1; key3x3[1][2] = 6;
+		key3x3[2][0] = 7; key3x3[2][1] = 5; key3x3[2][2] = 3;
+		HillCipher(key3x3, 3);
+		for (int i = 0; i < 3; ++i) {
+			delete[] key3x3[i];
+		}
+		delete[] key3x3;
 
 		// Call the VigenerCipher
 

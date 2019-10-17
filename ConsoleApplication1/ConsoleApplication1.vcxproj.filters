@@ -44,5 +44,11 @@
     <Text Include="playfair_output.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="hill_output_3x3.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="hill_output_2x2.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>
