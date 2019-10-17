@@ -50,5 +50,11 @@
     <Text Include="hill_output_2x2.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="vigenere_output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="vernam_output.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

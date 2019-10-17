@@ -4,6 +4,7 @@
 #include <fstream>
 #include <stdio.h> 
 #include <stdlib.h> 
+#include <algorithm>
 using namespace std;
 
 int SIZE = 30;
@@ -300,6 +301,170 @@ void HillCipher(int** keyParameter, const int matrixSize, string filePath = "") 
 	delete[] key;
 
 }
+
+void VigenerCipher(string key, bool mode, string filePath = "") {
+
+	class Vigenere
+	{
+	public:
+		string key;
+
+		Vigenere(string key)
+		{
+			for (size_t i = 0; i < key.size(); ++i)
+			{
+				if (key[i] >= 'A' && key[i] <= 'Z')
+					this->key += key[i];
+				else if (key[i] >= 'a' && key[i] <= 'z')
+					this->key += key[i] + 'A' - 'a';
+			}
+		}
+
+		string encryptRepeating(string text)
+		{
+			string out;
+			for (int i = 0, j = 0; i < text.length(); ++i)
+			{
+				char c = text[i];
+
+				if (c >= 'a' && c <= 'z')
+					c += 'A' - 'a';
+				else if (c < 'A' || c > 'Z')
+					continue;
+
+				out += (c + key[j] - 2 * 'A') % 26 + 'A';
+				j = (j + 1) % key.length();
+			}
+			return out;
+		}
+
+		string encryptAuto(string text)
+		{
+			string out;
+			int j = 0;
+			while (key.length() != text.length()) {
+				key += text[j];
+				j++;
+			}
+			transform(key.begin(), key.end(), key.begin(), ::toupper);
+			cout << "KEY IS :: " << key << endl;
+			cout << "TEXT IS :: " << text << endl;
+			for (int i = 0; i < text.length(); ++i)
+			{
+				char c = text[i];
+				if (c >= 'a' && c <= 'z')
+					c += 'A' - 'a';
+				else if (c < 'A' || c > 'Z')
+					continue;
+				out += (c + key[i] - 2 * 'A') % 26 + 'A';
+			}
+			return out;
+		}
+	};
+
+	// MARK: - File IO
+	ifstream inFile;
+	if (filePath.length() == 0) {
+		inFile.open("vigenere_plain.txt");
+	}
+	else {
+		inFile.open(filePath);
+	}
+	if (inFile.fail()) {
+		cout << "Error opeing the file. Program will terminate" << endl;
+		inFile.close();
+		exit(1);
+	}
+	ofstream myfile;
+	myfile.open("vigenere_output.txt", ios::app);
+
+
+
+	string result;
+	for (string line; getline(inFile, line); )
+	{
+		Vigenere cipher(key);
+		// MARK: - Encryption
+		if (mode) {
+			// Auto
+			result = cipher.encryptAuto(line);
+
+		} else {
+			// Repeating 
+			result = cipher.encryptRepeating(line);
+		}
+		// MARK: - Console output
+		cout << "VIGENERE CIPHER :: " << result << endl;
+		// MARK: - File IO
+		myfile << result << endl;
+	}
+
+	myfile << SEPARATOR;
+	myfile.close();
+	inFile.close();
+	cout << SEPARATOR;
+
+}
+
+void VernamCipher(string key, string filePath = "") {
+	class Vernam
+	{
+	public:
+		string text, key, result = "";
+		Vernam(string s, string k)
+		{
+			this->text = s;
+			this->key = k;
+		}
+		string encrypt()
+		{
+			for (size_t i = 0; i < text.length(); i++)
+			{
+				int temp = int(text[i]-'A') + int(key[i]-'A');
+				if (temp > 26) {
+					temp -= 26;
+				}
+				temp += 'A';
+				result += temp;
+			}
+			return result;
+		}
+	};
+
+	// MARK: - File IO
+	ifstream inFile;
+	if (filePath.length() == 0) {
+		inFile.open("vernam_plain.txt");
+	}
+	else {
+		inFile.open(filePath);
+	}
+	if (inFile.fail()) {
+		cout << "Error opeing the file. Program will terminate" << endl;
+		inFile.close();
+		exit(1);
+	}
+	ofstream myfile;
+	myfile.open("vernam_output.txt", ios::app);
+	string result = "";
+	for (string line; getline(inFile, line); )
+	{
+
+		Vernam V(line, key);
+		result = V.encrypt();
+		// MARK: - Console output
+		cout << "VERNAM CIPHER :: " << result << endl;
+		// MARK: - File IO
+		myfile << result << endl;
+	}
+
+	myfile << SEPARATOR;
+	myfile.close();
+	inFile.close();
+	cout << SEPARATOR;
+
+}
+
 // Driver program to test the above function 
 int main()
 {
@@ -310,15 +475,16 @@ int main()
 	cin >> choice;
 	if (choice == 1) {
 		// Call the CaeserCipher
-		//CaeserCipher(3);
-		//CaeserCipher(6);
-		//CaeserCipher(12);
+		CaeserCipher(3);
+		CaeserCipher(6);
+		CaeserCipher(12);
 
 		// Call the PlayFairCipher
-		//PlayFairCipher("rats");
-		//PlayFairCipher("archangel");
+		PlayFairCipher("rats");
+		PlayFairCipher("archangel");
 
 		// Call the HillCipher
+
 		int **key2x2 = new int*[2];
 		for (int i = 0; i < 2; i++) {
 			key2x2[i] = new int[2];
@@ -343,9 +509,14 @@ int main()
 		}
 		delete[] key3x3;
 
+
 		// Call the VigenerCipher
+		VigenerCipher("pie", false);
+		VigenerCipher("aether", true);
 
 		// Call the VernamCipher
+		VernamCipher("SPARTANS");
+
 	}
 	else if (choice == 2) {
 		cout << "Please enter the name of your .txt file. Make sure it exists within the same directory as this file." << endl;
@@ -353,22 +524,46 @@ int main()
 		cin >> filePath;
 
 		// Call the CaeserCipher
-		//CaeserCipher(3, filePath);
-		//CaeserCipher(6, filePath);
-		//CaeserCipher(12, filePath);
+		CaeserCipher(3, filePath);
+		CaeserCipher(6, filePath);
+		CaeserCipher(12, filePath);
 
 		// Call the PlayFairCipher
-		//PlayFairCipher("rats", filePath);
-		//PlayFairCipher("archangel", filePath);
+		PlayFairCipher("rats", filePath);
+		PlayFairCipher("archangel", filePath);
 
 		// Call the HillCipher
 
+		int **key2x2 = new int*[2];
+		for (int i = 0; i < 2; i++) {
+		key2x2[i] = new int[2];
+		}
+		key2x2[0][0] = 5; key2x2[0][1] = 17; key2x2[1][0] = 8; key2x2[1][1] = 3;
+		HillCipher(key2x2, 2, filePath);
+		for (int i = 0; i < 2; ++i) {
+		delete[] key2x2[i];
+		}
+		delete[] key2x2;
+
+		int **key3x3 = new int*[3];
+		for (int i = 0; i < 3; i++) {
+		key3x3[i] = new int[3];
+		}
+		key3x3[0][0] = 2; key3x3[0][1] = 4; key3x3[0][2] = 12;
+		key3x3[1][0] = 9; key3x3[1][1] = 1; key3x3[1][2] = 6;
+		key3x3[2][0] = 7; key3x3[2][1] = 5; key3x3[2][2] = 3;
+		HillCipher(key3x3, 3, filePath);
+		for (int i = 0; i < 3; ++i) {
+		delete[] key3x3[i];
+		}
+		delete[] key3x3;
+		
 		// Call the VigenerCipher
+		VigenerCipher("pie", false, filePath);
+		VigenerCipher("aether", true, filePath);
 
 		// Call the VernamCipher
-		
+		VernamCipher("SPARTANS", filePath);
 	}
-
 	return 0;
 }
-

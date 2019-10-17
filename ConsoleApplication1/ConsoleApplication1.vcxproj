@@ -157,7 +157,9 @@
     <Text Include="hill_plain_3x3.txt" />
     <Text Include="playfair_output.txt" />
     <Text Include="playfair_plain.txt" />
+    <Text Include="vernam_output.txt" />
     <Text Include="vernam_plain.txt" />
+    <Text Include="vigenere_output.txt" />
     <Text Include="vigenere_plain.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
